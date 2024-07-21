@@ -23,7 +23,4 @@ about_page = st.Page(
 #  --- Navigation Setup ---
 pg = st.navigation(pages=[dashboard_page, analysis_page, about_page])
 
-
-# Shared On All pages
-st.sidebar.text("Copyright @2024 ...")
 pg.run()
