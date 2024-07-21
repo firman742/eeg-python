@@ -15,10 +15,10 @@ st.title("Real-Time / Live Data EEG Dashboard")
 
 # connect into mysql
 connection = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='',
-    database='eeg',
+    host='sql12.freesqldatabase.com',
+    user='sql12721291',
+    password='1THfkC4yXz',
+    database='sql12721291',
 )
 
 cursor = connection.cursor()
