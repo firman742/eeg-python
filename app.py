@@ -1,7 +1,10 @@
 import streamlit as st 
 
+# --- CSS for Title Color ---
+with open('style.css') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+        
 # ---- Page Setup -----
-
 dashboard_page = st.Page(
         page="views/dashboard.py",
         title="Dashboard",
@@ -20,6 +23,7 @@ about_page = st.Page(
         title="About",
         icon=":material/account_circle:",
 )
+
 #  --- Navigation Setup ---
 pg = st.navigation(pages=[dashboard_page, analysis_page, about_page])
 
