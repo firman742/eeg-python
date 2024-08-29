@@ -6,7 +6,7 @@ from datetime import datetime
 
 # --------- Custom CSS Style
 with open('style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 st.title('Hi, User')
 
@@ -16,11 +16,12 @@ try:
         host='localhost',
         user='root',
         password='',
-        database='eeg',
+        database='eeg_project',
     )
 
     cursor = connection.cursor()
 
+    # Mengambil semua data dari table yang dituju       
     cursor.execute("SELECT * FROM eeg_table")
     data = cursor.fetchall()
 
@@ -30,14 +31,17 @@ try:
     # Ensure created_at is in datetime format
     df['created_at'] = pd.to_datetime(df['created_at'])
 
+# Memberikan Notif error jika terjadi kesalahan
 except mysql.connector.Error as err:
     st.error(f"Error: {err}")
     st.stop()
 
+# Menutup koneksi ke database
 finally:
     cursor.close()
     connection.close()
 
+# ------------ Calender ---------
 # Get today's date
 today_date = datetime.today().strftime('%Y-%m-%d')
 
@@ -121,7 +125,7 @@ custom_css = f"""
                 }}
                 
                 .fc-daygrid-day-events {{
-                        margin-top: 2px; /* Reduce margin for events */
+                         margin-top: 2px; /* Reduce margin for events */
                 }}
         }}
 
@@ -182,12 +186,9 @@ custom_css = f"""
 st_calendar = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
 st.write(st_calendar)
 
-st.button("Scan Now!")
+# Button to navigate to Scan page
+if st.button('Scan Now!'):
+    st.experimental_rerun()  # This will trigger a rerun which can be handled in a different way if needed.
 
 # Display scan history with links
 st.subheader("Scan History")
-
-# Adjust this to the correct column name
-for index, row in df.iterrows():
-    link = f"[{row['created_at']}: {row['status']}](/SingleItem?item_id={row['id']})"
-    st.markdown(link, unsafe_allow_html=True)

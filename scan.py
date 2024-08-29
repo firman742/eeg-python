@@ -10,7 +10,7 @@ connection = mysql.connector.connect(
     host='localhost',
     user='root',
     password='',
-    database='eeg',
+    database='eeg_project',
 )
 
 cursor = connection.cursor()
@@ -36,22 +36,20 @@ df = pd.DataFrame(data, columns=columns)
 # Ensure 'Tanggal Test' is in datetime format
 df['Tanggal Test'] = pd.to_datetime(df['Tanggal Test'])
 
-# Create a bar chart from 'klasifikasi' data
-fig_bar = px.bar(df, x='Tanggal Test', y='Level', title='Test Level Over Time', 
-                 labels={'Level': 'Level', 'Tanggal Test': 'Tanggal Test'})
-
-# Show the chart
-st.plotly_chart(fig_bar)
-
-# Display detailed information in a card
-selected_row = st.selectbox('Select NIS for Details:', df['NIS'])
+# Automatically select the first student or filter for a specific NIS
+selected_row = df['NIS'].iloc[0]  # This will automatically select the first student's data
 
 # Filter the DataFrame for the selected NIS
 filtered_df = df[df['NIS'] == selected_row]
 
 if not filtered_df.empty:
+    # Display detailed information in a card
     details = filtered_df.iloc[0]
 
+    # Create a bar chart from the filtered data
+    fig_bar = px.bar(filtered_df, x='Tanggal Test', y='Level', title=f'Test Level Over Time for {details["Nama"]}', labels={'Level': 'Level', 'Tanggal Test': 'Tanggal Test'})
+    st.plotly_chart(fig_bar)
+    
     # Card-like display using markdown with custom HTML/CSS
     st.markdown(f"""
     <div style="background-color:#f9f9f9; padding:20px; border-radius:10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); color: black;">
@@ -73,5 +71,6 @@ if not filtered_df.empty:
         </div>
     </div>
     """, unsafe_allow_html=True)
+
 else:
     st.warning("No details found for the selected NIS.")
